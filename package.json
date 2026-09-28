@@ -1,0 +1,28 @@
+{
+  "name": "ct-usage-ring",
+  "version": "0.1.0",
+  "description": "在 Codex 侧栏顶部显示轻量双用量环，悬停查看完整限额，点击打开用量设置。",
+  "type": "module",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Ne1ther/codex-tweaks-usage-ring.git"
+  },
+  "homepage": "https://github.com/Ne1ther/codex-tweaks-usage-ring",
+  "bugs": {
+    "url": "https://github.com/Ne1ther/codex-tweaks-usage-ring/issues"
+  },
+  "keywords": ["codex-tweaks-package", "codex-tweaks-ui", "codex-tweaks-usage"],
+  "scripts": {
+    "test": "node --test tests/*.test.mjs",
+    "check": "node --check src/index.js && node --check src/rings.js && node --check src/usage-query.js && npm test",
+    "package": "node tooling/package.mjs"
+  },
+  "dependencies": {},
+  "codexTweaks": {
+    "apiVersion": 3,
+    "entrypoints": { "renderer": "src/index.js" },
+    "priority": 50,
+    "packageDependencies": {}
+  }
+}
