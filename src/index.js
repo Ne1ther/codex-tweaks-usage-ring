@@ -4,7 +4,7 @@ import { selectRingWindows, ringTone } from "./rings.js";
 
 export function activate({ api, id, root }) {
   // 只读取 Codex 已经维护的用量 Query Cache，不自行请求账号接口。
-  // 顶部状态块只包含包拥有的节点；停用或重新注入时会完整移除。
+  // 侧栏用量块只包含包拥有的节点；停用或重新注入时会完整移除。
 
   const RUNTIME_KEY = Symbol.for(
     "codex-tweaks.codex-usage-ring.runtime",
@@ -82,25 +82,19 @@ export function activate({ api, id, root }) {
   }
 
   function getPlacement() {
-    const modeButton = getModeButton();
-    if (!modeButton) return null;
-    const navigation = modeButton.closest("nav") ?? document.body;
+    const rail = [...document.querySelectorAll('nav[data-app-navigation-rail]')]
+      .find(isVisible);
+    if (!rail) return null;
 
-    // Tooltip 的 display:contents 包装不再与操作区同级，沿祖先找到真实行。
-    for (let headerRow = modeButton.parentElement, depth = 0;
-      headerRow && headerRow !== navigation && depth < 5;
-      headerRow = headerRow.parentElement, depth += 1) {
-      const actionsRoot = [...headerRow.children].find(
-        (element) =>
-          !element.contains(modeButton) &&
-          !element.hasAttribute(WIDGET_MARKER) &&
-          element.querySelector("button"),
-      );
-      if (actionsRoot instanceof HTMLElement) {
-        return { actionsRoot, headerRow };
-      }
-    }
-    return null;
+    // The flexible navigation list precedes the account/help footer. Insert
+    // only our own node as a sibling, leaving React-owned elements in place.
+    const footer = [...rail.children].filter((element) =>
+      element !== activeWidget &&
+      isVisible(element) &&
+      getComputedStyle(element).position !== "absolute"
+    ).at(-1);
+    if (!footer?.querySelector("button")) return null;
+    return { rail, footer };
   }
 
   function isQueryClient(value) {
@@ -587,12 +581,9 @@ export function activate({ api, id, root }) {
       edgePadding,
       window.innerWidth - tooltipRect.width - edgePadding,
     );
-    const left = Math.max(edgePadding, Math.min(anchorRect.left, maxLeft));
-    const preferredTop = widgetRect.bottom + gap;
-    const top =
-      preferredTop + tooltipRect.height <= window.innerHeight - edgePadding
-        ? preferredTop
-        : Math.max(edgePadding, widgetRect.top - tooltipRect.height - gap);
+    const left = Math.max(edgePadding, Math.min(anchorRect.right + gap, maxLeft));
+    const maxTop = Math.max(edgePadding, window.innerHeight - tooltipRect.height - edgePadding);
+    const top = Math.max(edgePadding, Math.min(widgetRect.top, maxTop));
 
     activeTooltip.style.left = `${Math.round(left)}px`;
     activeTooltip.style.top = `${Math.round(top)}px`;
@@ -959,15 +950,15 @@ export function activate({ api, id, root }) {
 
     if (
       !activeWidget?.isConnected ||
-      activeWidget.parentElement !== placement.headerRow
+      activeWidget.parentElement !== placement.rail
     ) {
       disposeWidget();
       activeWidget = createWidget();
       lastRenderKey = null;
     }
 
-    if (activeWidget.nextElementSibling !== placement.actionsRoot) {
-      placement.headerRow.insertBefore(activeWidget, placement.actionsRoot);
+    if (activeWidget.nextElementSibling !== placement.footer) {
+      placement.rail.insertBefore(activeWidget, placement.footer);
     }
     document.documentElement.setAttribute(ROOT_MARKER, "");
     renderWidget();
@@ -984,10 +975,11 @@ export function activate({ api, id, root }) {
       const target = record.target;
       if (target.closest?.(`[${WIDGET_MARKER}],[${TOOLTIP_MARKER}]`)) return false;
       if (record.type === "attributes") return target.matches?.('button[aria-haspopup="menu"]');
-      if (target.closest?.("nav")) return true;
+      if (target.closest?.('nav[data-app-navigation-rail]')) return true;
       return [...record.addedNodes, ...record.removedNodes].some((node) =>
         node.nodeType === 1 &&
-        (node.matches?.("nav") || node.querySelector?.('button[aria-haspopup="menu"]')),
+        (node.matches?.('nav[data-app-navigation-rail]') ||
+          node.querySelector?.('nav[data-app-navigation-rail]')),
       );
     })) queueSync();
   });

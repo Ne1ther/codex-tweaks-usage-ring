@@ -1,30 +1,40 @@
 /* Static SVG quota rings. Only value changes receive a short transition. */
 html[data-codex-tweaks-usage-ring-active] [data-codex-tweaks-usage-ring] {
   -webkit-app-region: no-drag;
-  position: relative; z-index: 20; display: flex; flex: 0 1 auto;
-  align-items: center; justify-content: flex-end; min-inline-size: 0;
-  max-inline-size: 132px; block-size: 36px; box-sizing: border-box;
-  margin-inline: 2px 4px; padding: 0 4px; border: 1px solid transparent;
-  border-radius: 9px; color: var(--color-token-text-primary, var(--color-text-foreground));
-  background: transparent; font: inherit; font-variant-numeric: tabular-nums;
+  appearance: none; position: relative; z-index: 20; display: flex;
+  flex: 0 0 112px; align-self: center; align-items: center; justify-content: center;
+  inline-size: 38px; min-inline-size: 38px; max-inline-size: 38px;
+  block-size: 112px; box-sizing: border-box;
+  margin: 0 0 2px; padding: 5px 2px; border: 1px solid rgb(110 138 159 / 16%);
+  border-radius: 19px; color: var(--color-token-text-primary, var(--color-text-foreground));
+  background: light-dark(rgb(116 146 169 / 5%), rgb(179 205 225 / 6%));
+  box-shadow: inset 0 1px rgb(255 255 255 / 5%);
+  font: inherit; font-variant-numeric: tabular-nums;
   cursor: pointer; white-space: nowrap; user-select: none;
   transition: background-color 160ms ease, border-color 160ms ease;
 }
+html[data-codex-tweaks-usage-ring-active] [data-codex-tweaks-usage-ring][data-rings="1"] {
+  flex-basis: 62px; block-size: 62px;
+}
+html[data-codex-tweaks-usage-ring-active] [data-codex-tweaks-usage-ring][hidden] {
+  display: none !important;
+}
 html[data-codex-tweaks-usage-ring-active] [data-codex-tweaks-usage-ring]:hover {
-  background: light-dark(rgb(80 105 126 / 7%), rgb(201 222 244 / 6%));
-  border-color: light-dark(rgb(76 112 143 / 10%), rgb(210 226 245 / 12%));
+  background: light-dark(rgb(116 146 169 / 9%), rgb(179 205 225 / 9%));
+  border-color: light-dark(rgb(76 112 143 / 17%), rgb(210 226 245 / 21%));
 }
 html[data-codex-tweaks-usage-ring-active] [data-codex-tweaks-usage-ring]:focus-visible {
   outline: 2px solid var(--color-border-focus, #8abbd0); outline-offset: 1px;
 }
 html[data-codex-tweaks-usage-ring-active] [data-codex-tweaks-usage-ring-value] {
-  display: flex; align-items: center; justify-content: flex-end; gap: 7px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 2px; inline-size: 32px;
 }
 html[data-codex-tweaks-usage-ring-active] .ct-usage-ring-meter {
   --ct-ring-track: rgb(87 111 131 / 17%);
   --ct-ring-soft: #8bb3c4; --ct-ring-bright: #4c9eae;
-  position: relative; display: inline-flex; flex: none; align-items: center;
-  inline-size: 56px; block-size: 33px;
+  position: relative; display: block; flex: none;
+  inline-size: 32px; block-size: 48px;
 }
 html.dark[data-codex-tweaks-usage-ring-active] .ct-usage-ring-meter,
 html[data-theme="dark"][data-codex-tweaks-usage-ring-active] .ct-usage-ring-meter {
@@ -38,7 +48,8 @@ html[data-codex-tweaks-usage-ring-active] .ct-usage-ring-meter[data-tone="critic
   --ct-ring-soft: #e8aaa7; --ct-ring-bright: #c87979;
 }
 html[data-codex-tweaks-usage-ring-active] .ct-usage-ring-meter svg {
-  position: absolute; inset-inline-start: 0; inline-size: 32px; block-size: 32px; overflow: visible;
+  position: absolute; inset-block-start: 0; inset-inline-start: 0;
+  inline-size: 32px; block-size: 32px; overflow: visible;
 }
 html[data-codex-tweaks-usage-ring-active] .ct-usage-ring-meter stop:first-child { stop-color: var(--ct-ring-soft); }
 html[data-codex-tweaks-usage-ring-active] .ct-usage-ring-meter stop:last-child { stop-color: var(--ct-ring-bright); }
@@ -51,13 +62,15 @@ html[data-codex-tweaks-usage-ring-active] .ct-usage-ring-progress {
   transition: stroke-dashoffset 360ms cubic-bezier(.22, 1, .36, 1);
 }
 html[data-codex-tweaks-usage-ring-active] .ct-usage-ring-percent {
-  position: absolute; inset-inline-start: 0; display: grid; place-items: center;
+  position: absolute; inset-block-start: 0; inset-inline-start: 0;
+  display: grid; place-items: center;
   inline-size: 32px; block-size: 32px; font-size: 9.5px; font-weight: 650;
   letter-spacing: -.35px; line-height: 1;
 }
 html[data-codex-tweaks-usage-ring-active] .ct-usage-ring-label {
-  margin-inline-start: 35px; color: var(--color-token-text-secondary, var(--color-text-secondary));
-  font-size: 10px; font-weight: 550; line-height: 1;
+  position: absolute; inset-block-end: 3px; inset-inline: 0;
+  color: var(--color-token-text-secondary, var(--color-text-secondary));
+  font-size: 9px; font-weight: 550; line-height: 1; text-align: center;
 }
 html[data-codex-tweaks-usage-ring-active] [data-codex-tweaks-usage-ring-tooltip] {
   --ct-ring-card-bg: var(--app-color-background-elevated-primary-opaque, #f5f7f9);

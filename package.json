@@ -1,7 +1,7 @@
 {
   "name": "ct-usage-ring",
-  "version": "0.1.0",
-  "description": "在 Codex 侧栏顶部显示轻量双用量环，悬停查看完整限额，点击打开用量设置。",
+  "version": "0.1.1",
+  "description": "在 Codex 账号侧栏上方纵向显示轻量双用量环，悬停查看完整限额，点击打开用量设置。",
   "type": "module",
   "license": "MIT",
   "repository": {
